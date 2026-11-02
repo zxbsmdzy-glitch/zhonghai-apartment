@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【房东直售】中海公寓54号楼</title>
+    <style>
+        body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; margin: 0; padding: 0; background: #f5f5f5; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: #fff; padding-bottom: 40px; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+        
+        /* 0. 顶部标题与价格区域 (按截图一比一还原) */
+        .header-block {
+            padding: 20px 20px 15px 20px;
+            background: #fff;
+        }
+        .main-title {
+            font-size: 19px;
+            font-weight: bold;
+            line-height: 1.5;
+            color: #222;
+            margin-bottom: 15px;
+        }
+        .badge-red {
+            background-color: #ff4d4f;
+            color: white;
+            font-size: 13px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            vertical-align: 2px;
+            margin-right: 5px;
+            font-weight: normal;
+        }
+        .price-display {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: baseline;
+        }
+        .price-currency {
+            color: #d92121;
+            font-size: 18px;
+            margin-left: 10px;
+            margin-right: 2px;
+        }
+        .price-number {
+            color: #d92121;
+            font-size: 34px;
+            font-weight: bold;
+        }
+        .price-unit {
+            color: #d92121;
+            font-size: 15px;
+            margin-left: 3px;
+        }
+        .sub-text {
+            font-size: 14px;
+            color: #888;
+        }
+
+        /* 1. 滚动字幕 (跑马灯) */
+        .marquee-container {
+            background: #fff8f8;
+            color: #e53935;
+            border-top: 1px solid #ffe8e8;
+            border-bottom: 1px solid #ffe8e8;
+            overflow: hidden;
+            position: relative;
+            padding: 8px 0;
+            height: 28px;
+            display: flex;
+            align-items: center;
+        }
+        .marquee-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scroll-left 15s linear infinite;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        @keyframes scroll-left {
+            0% { transform: translateX(100vw); }
+            100% { transform: translateX(-150%); }
+        }
+        @media (min-width: 600px) {
+            @keyframes scroll-left {
+                0% { transform: translateX(600px); }
+                100% { transform: translateX(-150%); }
+            }
+        }
+        
+        /* 文字概况区域 */
+        .content { padding: 5px 20px 15px 20px; }
+        h2 { font-size: 17px; border-bottom: 2px solid #e53935; padding-bottom: 5px; color: #e53935; margin-top: 20px;}
+        p, li { line-height: 1.6; font-size: 15px; color: #444; }
+        ul { padding-left: 20px; margin-top: 5px;}
+        
+        /* 2. 房屋实景板块 */
+        .room-block {
+            margin-top: 20px;
+            border: 1px solid #eaeaea;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #fafafa;
+            padding: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .room-title { font-size: 16px; font-weight: bold; margin-bottom: 12px; color: #222; text-align: center;}
+        
+        /* 4. iPhone竖屏比例 (9:16) 视频容器 */
+        .video-container {
+            width: 100%;
+            aspect-ratio: 9 / 16;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* 4. iPhone竖屏比例 (9:16) 横向滚动图集 */
+        .scroll-gallery {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding-bottom: 10px;
+            /* 移除 scroll-snap-type 以保证自动滚动丝滑顺畅 */
+        }
+        .scroll-gallery::-webkit-scrollbar { height: 4px; display: none; /* 手机端隐藏滚动条更美观 */ }
+        .scroll-gallery img {
+            height: 260px;
+            width: auto;
+            aspect-ratio: 9 / 16;
+            object-fit: cover;
+            border-radius: 6px;
+            flex-shrink: 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            cursor: pointer; /* 提示可点击 */
+        }
+        
+        /* 底部动态反转按钮 */
+        .contact-btn {
+            display: block;
+            background: #4caf50;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            margin: 30px 20px 10px 20px;
+            box-shadow: 0 4px 6px rgba(76, 175, 80, 0.3);
+            transition: transform 0.6s ease-in-out, background-color 0.4s;
+            transform-style: preserve-3d;
+        }
+        .contact-btn.flipped {
+            transform: rotateX(360deg);
+            background-color: #e53935; /* 反转后变成醒目的红色 */
+        }
+        
+        /* 图片放大模态框 */
+        #imageModal {
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.9); 
+            z-index: 9999; 
+            justify-content: center; 
+            align-items: center; 
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        #imageModal.show {
+            display: flex;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 0. 顶部标题与价格区域 -->
+        <div class="header-block">
+            <div class="main-title">
+                <span class="badge-red">房东直售</span>中海公寓54号楼，70年产权带超大平台，两套相邻，低价出！
+            </div>
+            <div class="price-display">
+                单套购买 <span class="price-currency">¥</span><span class="price-number">9.6</span><span class="price-unit">万/套</span>
+            </div>
+            <div class="sub-text">
+                两套更优惠 (价位可议，买家承担税费)。
+        </div>
+
+        <!-- 1. 滚动字幕 (跑马灯) -->
+        <div class="marquee-container">
+            <div class="marquee-text">
+                🔥 价位可议，欢迎随时联系看房！🔥
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>房屋概况</h2>
+            <ul>
+                <li><strong>面积/楼层：</strong>单套38.34平米，黄金2楼（总高20层）</li>
+                <li><strong>位置朝向：</strong>东南朝向。<p></p>位于整栋楼东北角（201紧邻楼道口，217与201相邻）。</li>
+            </ul>
+
+            <h2>产权情况补充</h2>
+            <ul>
+                <li><strong>产权性质：</strong>70年大产权！</li>
+                <li><strong>办证情况：</strong>房号217（满两年），房号201（未满两年）。</li>
+            </ul>
+
+            <h2>核心亮点</h2>
+            <p><strong>窗外超大活动平台！</strong>从房间紧邻楼道门或南侧楼道门均可一步直达，硬化地面区域、绿化区域、活动空间巨大！</p>
+            <p><strong>入手即获免费赠送！</strong>全套9.5成新棋牌室设备、专用座椅、排烟设备、茶几沙发等配套设施，接手即营业！</p>
+            <p><strong>东南朝向、窗外大平台！</strong>东南朝向，采光极佳，冬日平台晒暖，夏日干燥通风，春秋平台漫步，四季皆宜。</p>
+            
+
+            <h2>装修 & 优势 & 卖点 </h2>
+            <p><strong>简单实用装修。</strong></p>
+            <p>室内近日新装，更新墙面为浅色壁布，叠加东南朝向，室内光线充足。<p>地暖入户，冬日室内温暖；大品牌空调，夏日不惧酷暑、保持凉爽。</p>
+            
+            <h2>房屋实景</h2>
+            
+            <!-- ============================================== -->
+            <!-- 房号 217 板块 -->
+            <!-- ============================================== -->
+            <div class="room-block">
+                <div class="room-title">📍 房号 217 </div>
+                
+                <div class="video-container">
+                    <video 
+                        src="217-shipin.mp4" 
+                        poster="217_fangjian.jpg" 
+                        controls 
+                        playsinline>
+                    </video>
+                </div>
+                
+                <div class="scroll-gallery">
+                    <img src="217_menkou.jpg" alt="217实景1">
+                    <img src="217_shafa-chaji.jpg" alt="217实景2">
+                    <img src="217_weishengjian1.jpg" alt="217实景3">
+                    <img src="217_weishengjian2.jpg" alt="217实景4">
+                    <img src="217_weishengjian3.jpg" alt="217实景5">
+                    <img src="chuangwa-ipingtai.jpg" alt="超大平台">
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 房号 201 板块 -->
+            <!-- ============================================== -->
+            <div class="room-block">
+                <div class="room-title">📍 房号 201 </div>
+                
+                <div class="video-container">
+                    <video 
+                        src="201-shipin.mp4" 
+                        poster="201_fangjian.jpg" 
+                        controls 
+                        playsinline>
+                    </video>
+                </div>
+                
+                <div class="scroll-gallery">
+                    <img src="201_menkou.jpg" alt="201实景1">
+                    <img src="201_shafa-chaji.jpg" alt="201实景2">
+                    <img src="201_weishengjian1.jpg" alt="201实景3">
+                </div>
+            </div>
+            
+            <!-- ============================================== -->
+            <!-- 新增：接手即营业 板块 -->
+            <!-- ============================================== -->
+            <h2 style="margin-top: 30px;">接手即营业</h2>
+            <div class="room-block">
+                <div class="room-title">🎁 免费赠送全套设备 </div>
+                <p style="padding: 0 10px; font-size: 15px; color: #444; line-height: 1.6; margin-top: 0;">
+                    如果您有意继续经营棋牌室，房间内的<strong>空调、麻将机、配套座椅、沙发、简易茶几</strong>等设备全部免费赠送！不用重新投资，接手马上就能赚钱！
+                </p>
+                
+                <div class="video-container">
+                    <!-- 请将下方链接替换为您拍摄的 室内设施/麻将机 等视频 -->
+                    <video 
+                        src="替换为配套设施的视频.mp4" 
+                        poster="majiangjii.jpg" 
+                        controls 
+                        playsinline>
+                    </video>
+                </div>
+                
+                <div class="scroll-gallery">
+                    <!-- 请将下方链接替换为您拍摄的 室内设施/麻将机 等照片 -->
+                    <img src="majiangji2i.jpg" alt="设备实景1">
+                    <img src="majiangjii.jpg" alt="设备实景2">                    
+                </div>
+            </div>
+        </div>
+
+        <!-- 替换为您真实的电话号码，初始不带链接以触发反转动画 -->
+        <a href="javascript:void(0)" id="contactBtn" class="contact-btn" onclick="revealContact(event)">📞 欢迎随时联系我！中介勿扰！</a>
+        
+    </div>
+
+    <!-- 全屏图片查看器 -->
+    <div id="imageModal" onclick="closeModal()">
+        <img id="modalImg" style="max-width:95%; max-height:85%; object-fit:contain; border-radius:8px;">
+        <div style="color:white; margin-top:20px; font-size:15px; letter-spacing: 1px;">点击任意区域关闭</div>
+    </div>
+
+    <script>
+        // 1. 按钮点击反转逻辑
+        function revealContact(e) {
+            const btn = document.getElementById('contactBtn');
+            if (!btn.classList.contains('flipped')) {
+                e.preventDefault(); // 阻止默认跳转
+                btn.classList.add('flipped');
+                
+                // 等待翻转到一半时替换文字内容，效果更自然
+                setTimeout(() => {
+                    btn.innerHTML = '📞 181 0913 1539 (点击直接拨打)';
+                }, 150);
+                
+                // 动画完成后赋予真实的拨号链接
+                setTimeout(() => {
+                    btn.href = 'tel:18109131539';
+                    btn.removeAttribute('onclick'); // 移除反转事件，下一次点击直接拨打
+                }, 600);
+            }
+        }
+
+        // 2. 自动滚动与按住暂停逻辑
+        document.addEventListener('DOMContentLoaded', () => {
+            const galleries = document.querySelectorAll('.scroll-gallery');
+            
+            galleries.forEach(gallery => {
+                let isPaused = false;
+                let direction = 1;
+                let speed = 0.6; // 滚动速度，可调整
+                
+                function autoScroll() {
+                    if (!isPaused) {
+                        gallery.scrollLeft += speed * direction;
+                        
+                        // 碰壁反弹逻辑
+                        if (gallery.scrollLeft >= (gallery.scrollWidth - gallery.clientWidth) - 1) {
+                            direction = -1; // 触及右边缘，向左滚动
+                        } else if (gallery.scrollLeft <= 1) {
+                            direction = 1;  // 触及左边缘，向右滚动
+                        }
+                    }
+                    requestAnimationFrame(autoScroll);
+                }
+                
+                // 启动滚动动画
+                requestAnimationFrame(autoScroll);
+                
+                // 监听鼠标/触摸事件以暂停滚动
+                gallery.addEventListener('mousedown', () => isPaused = true);
+                gallery.addEventListener('mouseup', () => isPaused = false);
+                gallery.addEventListener('mouseleave', () => isPaused = false);
+                
+                // passive: true 提高移动端触摸性能
+                gallery.addEventListener('touchstart', () => isPaused = true, {passive: true});
+                gallery.addEventListener('touchend', () => isPaused = false);
+            });
+
+            // 3. 点击图片放大逻辑
+            const allImages = document.querySelectorAll('.scroll-gallery img');
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImg');
+            
+            allImages.forEach(img => {
+                img.addEventListener('click', () => {
+                    modalImg.src = img.src;
+                    modal.classList.add('show');
+                });
+            });
+        });
+
+        // 关闭模态框
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                document.getElementById('modalImg').src = '';
+            }, 300); // 等待淡出动画结束
+        }
+    </script>
+</body>
+</html>
